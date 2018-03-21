@@ -1,0 +1,15 @@
+#!/bin/bash
+if [ "$1" = "--help" ]; then echo "GETMEDIA.SH
+	- pracuje se soubory .html
+	- prepinace:
+		-i	pro vypis obrazku typu .jpg, .png, .svg
+		-s	pro vypis zvuku typu .wav, .mp3, .ogg"; exit; fi;
+if [ "$1" = "-s" ]; then 
+	cat $2 | tr "\"" "\n" | grep -e .wav -e .mp3 -e .ogg; fi;
+if [ "$1" = "-i" ]; then
+	cat $2 | tr "\"" "\n" | grep -e .jpg -e .png -e .svg; fi;
+if [ "$1" = *".html" ]; then
+	cat $1 | tr "\"" "\n" | grep -e .jpg -e .png -e .svg -e .wav -e .mp3 -e .ogg; fi; 
+	
+	
+
