@@ -5,11 +5,10 @@ if [ "$1" = "--help" ]; then echo "GETMEDIA.SH
 		-i	pro vypis obrazku typu .jpg, .png, .svg
 		-s	pro vypis zvuku typu .wav, .mp3, .ogg"; exit; fi;
 if [ "$1" = "-s" ]; then 
-	cat $2 | tr "\"" "\n" | grep -e \.wav$ -e \.mp3$ -e \.ogg$; fi;
+	cat $2 | tr "\"" "\n" | grep -e 'https\?://[^ "]*\.wav' -e 'https\?://[^ "]*\.mp3' -e 'https\?://[^ "]*\.ogg'; fi;
 if [ "$1" = "-i" ]; then
-	cat $2 | tr "\"" "\n" | grep -e \.jpg$ -e \.png$ -e \.svg$; fi;
+	cat $2 | tr "\"" "\n" | grep -e 'https\?://[^ "]*\.jpg' -e '\.https\?://[^ "]*png' -e 'https\?://[^ "]*\.svg'; fi;
 if [ "$1" = *".html" ]; then
-	cat $1 | tr "\"" "\n" | grep -e \.jpg$ -e \.png$ -e \.svg$ -e \.wav$ -e \.mp3$ -e \.ogg$; fi; 
-	
+	cat $1 | tr "\"" "\n" | grep -e 'https\?://[^ "]*\.wav' -e 'https\?://[^ "]*\.mp3' -e 'https\?://[^ "]*\.ogg' -e 'https\?://[^ "]*\.jpg' -e '\.https\?://[^ "]*png' -e 'https\?://[^ "]*\.svg'; fi; 
 	
 
