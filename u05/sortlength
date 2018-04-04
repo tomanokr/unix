@@ -1,0 +1,10 @@
+#!/bin/sh
+cut -f1 countrycodes_en.csv > doc
+cat doc | while read line
+do
+	echo $line |  wc -m >> radky
+done 
+paste radky doc | sort -nr | cut -f2
+rm doc radky
+
+
