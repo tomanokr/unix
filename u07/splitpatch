@@ -1,0 +1,15 @@
+#!/bin/sh
+patch=$1
+dir=$2
+files=$$
+cat "$patch" | csplit -f "$files" -sz - /^diff.*$/ {*}
+for file in $files*
+do
+	read x x x name x < $file
+	rename=`echo "$name" |  sed s/$/.patch/ | tr "/" "-"`
+	cat "$file" | grep "^[+-]" > "$rename"
+	newname=`echo "$rename" | rev | sed s=\-b$== | rev`
+	mv "$rename" "$newname"
+	mv "$newname" "$dir"
+	rm "$file"
+done
