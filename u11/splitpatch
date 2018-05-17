@@ -29,7 +29,7 @@ while [ -n "$1" ]; do
 		if [ -n "$1" ]; then
 			dir=$1
 			d=yes
-		else dir=`cat "$patch" | sed  s+.patch$+.splitpatch/+`
+		else dir=`echo "$patch" | sed  "s+.patch$+.splitpatch/+" | rev | sed "s+$+/.+" | rev`
 		break
 		fi
 		;;
@@ -39,10 +39,11 @@ while [ -n "$1" ]; do
 done
 if [ $error = 1 ]; then 
 	echo "Zadejte prosim spravne parametry, pro napovedu zadejte --help" >&2
+	exit
 fi
 if [ $help = yes ]; then
 		echo "
-		SPLITPATCH help
+	SPLITPATCH help
 		
 		SPLITPATCH rozdeluje patche na soubory
 
@@ -53,14 +54,17 @@ if [ $help = yes ]; then
 		-i [NAZEV_PATCHE]	prideli patch k rozdeleni
 
 		-d [NAZEV_ADRESARE]	urci adresar, kam smerovat soubory"
+	exit
 fi
+
  
-if [ d = no ]; then
-	if [ i = no ]; then
+if [ $d = no ]; then
+	if [ $i = no ]; then
 		echo "Zadejte prosim spravne parametry, pro napovedu zadejte --help" >&2
-		break
+		exit
 	else
-		dir=`cat "$patch" | sed s+.patch$+.splitpatch/+`
+		dir=`echo "$patch" | sed "s+.patch$+.splitpatch/+" | rev | sed "s+$+/.+" | rev`
+        	mkdir "$dir"
 	fi
 fi
 	if [[ $error = 0 && $help = no ]]; then 
