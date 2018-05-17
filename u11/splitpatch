@@ -1,0 +1,79 @@
+#!/bin/bash
+patch=""
+dir=""
+files=$$
+error=0
+i=no
+d=no
+help=no
+if [ -z "$1" ]; then
+	error=1
+fi
+while [ -n "$1" ]; do
+        case "$1" in
+	--help )
+		help=yes
+		break
+		;;
+        -i )
+		shift
+		if [ -n "$1" ]; then
+			patch=$1
+			i=yes
+		else read patch
+		break
+		fi
+		;;
+	-d )
+		shift
+		if [ -n "$1" ]; then
+			dir=$1
+			d=yes
+		else dir=`cat "$patch" | sed  s+.patch$+.splitpatch/+`
+		break
+		fi
+		;;
+	* ) error=1
+	esac
+	shift
+done
+if [ $error = 1 ]; then 
+	echo "Zadejte prosim spravne parametry, pro napovedu zadejte --help" >&2
+fi
+if [ $help = yes ]; then
+		echo "
+		SPLITPATCH help
+		
+		SPLITPATCH rozdeluje patche na soubory
+
+		------Parametry
+
+		--help			zobrazi napovedu
+
+		-i [NAZEV_PATCHE]	prideli patch k rozdeleni
+
+		-d [NAZEV_ADRESARE]	urci adresar, kam smerovat soubory"
+fi
+ 
+if [ d = no ]; then
+	if [ i = no ]; then
+		echo "Zadejte prosim spravne parametry, pro napovedu zadejte --help" >&2
+		break
+	else
+		dir=`cat "$patch" | sed s+.patch$+.splitpatch/+`
+	fi
+fi
+	if [[ $error = 0 && $help = no ]]; then 
+		cat "$patch" | csplit -f "$files" -sz - /^diff.*$/ {*}
+		for file in $files*
+		do
+			read x x x name x < $file
+			rename=`echo "$name" |  sed s/$/.patch/ | tr "/" "-"`
+			cat "$file" | grep "^[+-]" > "$rename"
+			newname=`echo "$rename" | rev | sed s=\-b$== | rev`
+			mv "$rename" "$newname"
+			mv "$newname" "$dir"
+			rm "$file"
+		done
+	fi
+
